@@ -1,3 +1,14 @@
+
+local modinit = require("modinit")
+local mod = modinit("simple_health_bar")
+
+local logger = _G.import("log");
+logger.log(_M._path, "utils start")
+
+------------------------------------------------------------
+-- rem
+------------------------------------------------------------
+
 local lib = {}
 local Clamp = function(num, min, max)
     assert(max >= min, "max needs to be larger than min!")
@@ -74,6 +85,8 @@ local function StrSpl(str, sep)
     return t
 end
 lib.StrSpl = StrSpl
+
+
 local NewDrml = function()
     return {
         urlD = "http://dreamlo.com/lb/",
@@ -87,6 +100,7 @@ local NewDrml = function()
             self:Clear()
             self.mode = "read"
             local url = self.urlD .. publicCode .. "/pipe-get/" .. name
+logger.log(_M._path, "ReadAsync 333 ", self, url, publicCode, callback, name)          
             TheSim:QueryServer(
                 url,
                 function(result, isSuccessful, resultCode)
@@ -122,6 +136,7 @@ local NewDrml = function()
             self:Clear()
             self.mode = "read"
             local url = self.urlD .. publicCode .. "/pipe"
+logger.log(_M._path, "ReadAllAsync 222 ", self, url, publicCode, callback)
             TheSim:QueryServer(
                 url,
                 function(result, isSuccessful, resultCode)
@@ -174,6 +189,8 @@ local NewDrml = function()
             self.mode = "write"
             local url =
                 self.urlD .. privateCode .. "/add/" .. name .. "/" .. score .. "/" .. seconds .. "/" .. self:T2D(text)
+logger.log(_M._path, "WriteAsync 444 ", url, self, privateCode, callback, name, score, seconds, text)
+
             TheSim:QueryServer(
                 url,
                 function(result, isSuccessful, resultCode)
@@ -239,7 +256,9 @@ local NewDrml = function()
         end
     }
 end
-lib.NewDrml = NewDrml
+-- lib.NewDrml = NewDrml
+
+
 local GTData = function()
     return {
         content = "",
@@ -247,9 +266,12 @@ local GTData = function()
         ReadAllAsync = function(self, url, callback)
             self:Clear()
             local url = url
+logger.log(_M._path, "ReadAllAsync 111 ", self, url, callback)
             TheSim:QueryServer(
                 url,
                 function(result, isSuccessful, resultCode)
+-- print("[simple_health_bar] ReadAllAsync:", result, isSuccessful, resultCode)
+-- logger.log(_M._path, "ReadAllAsync callback", result, isSuccessful, resultCode)
                     if isSuccessful and string.len(result) > 1 then
                         result = string.gsub(result, "\r", "")
                         self.content = result
@@ -298,6 +320,7 @@ local GTData = function()
     }
 end
 lib.GTData = GTData
+
 local LocalData = function()
     return {
         path = "mod_config_data/",
@@ -333,5 +356,7 @@ local LocalData = function()
         end
     }
 end
+
+logger.log(_M._path, "utils return lib")
 lib.LocalData = LocalData
 return lib

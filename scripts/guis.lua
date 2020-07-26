@@ -1,3 +1,15 @@
+
+local modinit = require("modinit")
+local mod = modinit("simple_health_bar")
+
+local logger = _G.import("log");
+logger.log(_M._path, "guis start")
+
+------------------------------------------------------------
+-- rem
+------------------------------------------------------------
+
+
 local Widget = require "widgets/widget"
 local Image = require "widgets/image"
 local Text = require "widgets/text"
@@ -1838,60 +1850,7 @@ function DYC_CfgMenu:CheckGlobals(dt)
             self.gt = SHB["lib"]["GTData"]()
         end
         local gt = self.gt
-        gt:ReadAllAsync(
-            gtu,
-            function()
-                local n = SHB.uid
-                local udata = gt.data[n]
-                if udata and udata.text then
-                    for k, v in pairs(udata) do
-                        if k ~= "text" then
-                            ld:GetString(
-                                n .. string.lower(k),
-                                function(str)
-                                    ld:SetString(n .. string.lower(k), v)
-                                    if not str then
-                                        local b = TableContains(specialList, k)
-                                        if b then
-                                            self:DoApply()
-                                        end
-                                    end
-                                end
-                            )
-                            ld:GetString(
-                                n .. string.lower(k) .. "_message",
-                                function(str)
-                                    if not str then
-                                        ld:SetString(n .. string.lower(k) .. "_message", v)
-                                        local msg =
-                                            strings:GetString("receiveitem") ..
-                                            ": [" .. strings:GetString(k) .. "] "
-                                        if v == "1" then
-                                            msg = msg .. strings:GetString("thx", "")
-                                        elseif v == "2" then
-                                            msg = msg .. strings:GetString("happysf", "")
-                                        elseif v == "3" then
-                                            msg = strings:GetString("chosenone", "") .. msg
-                                        end
-                                        self.ShowMessage(
-                                            msg,
-                                            strings:GetString("message"),
-                                            nil,
-                                            40,
-                                            800,
-                                            300,
-                                            200,
-                                            100,
-                                            true
-                                        )
-                                    end
-                                end
-                            )
-                        end
-                    end
-                end
-            end
-        )
+
     end
 end
 function DYC_CfgMenu:NextPage()
@@ -1970,4 +1929,7 @@ function DYC_CfgMenu:OnUpdate(dt)
     self:CheckGlobals(dt)
 end
 dycguis.CfgMenu = DYC_CfgMenu
+
+
+logger.log(_M._path, "guis end")
 return dycguis

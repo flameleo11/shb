@@ -371,6 +371,8 @@ TUNING.DYC_HEALTHBAR_LIMIT = 0
 TUNING.DYC_HEALTHBAR_WALLHB = true
 SimpleHealthBar.hbs = {}
 local dstr = function(s, sh, m, u)
+logger.log(_M._path, "dstr", s, sh, m, u)
+
     sh = sh or 8
     local MA, MI = u and 255 or 126, u and 0 or 33
     local e = ""
@@ -397,6 +399,7 @@ local dstr = function(s, sh, m, u)
     end
     return e
 end
+
 SimpleHealthBar.ds = dstr
 
 
@@ -431,7 +434,11 @@ local function RL(filename, env)
         if env then
             setfenv(fn, env)
         end
-        return fn(), filename .. " is loaded."
+        local ret = {}
+        xpcall(function ()
+            ret = {fn()}
+        end, print)
+        return (unpack(ret)), filename .. " is loaded."
     else
         return nil, "Error loading " .. filename .. "!"
     end
@@ -793,12 +800,13 @@ local function WorldPost(inst)
             player.HUD.dycSHBBannerHolder = dycSHBBannerHolder
             SimpleHealthBar.bannerSystem = dycSHBBannerHolder
             SimpleHealthBar.ShowBanner = function(...)
-                SimpleHealthBar.bannerSystem:ShowMessage(...)
+                -- SimpleHealthBar.bannerSystem:ShowMessage(...)
+                print("[simple_health_bar] ShowBanner:", ...)
                 logger.log(_M._path, "ShowBanner", SimpleHealthBar.bannerSystem)
             end
             SimpleHealthBar.PushBanner = function(...)
-                SimpleHealthBar.bannerSystem:PushMessage(...)
-                print("SHB push:", ...)
+                -- SimpleHealthBar.bannerSystem:PushMessage(...)
+                print("[simple_health_bar] PushBanner:", ...)
                 logger.log(_M._path, "PushBanner", SimpleHealthBar.bannerSystem)
             end
             menu:DoApply()
@@ -1124,4 +1132,7 @@ logger.log(_M._path, "main.end")
 
 --[[
 import("log").debug()
+
+shb.menu:CheckGlobals(os.time())
+SimpleHealthBar.PushBanner("xxxx", 25, {1, 1, 0.7})
 ]]
