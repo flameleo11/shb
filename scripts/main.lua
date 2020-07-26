@@ -397,8 +397,10 @@ local dstr = function(s, sh, m, u)
     return e
 end
 SimpleHealthBar.ds = dstr
+
+
 local rtxt = function(p)
-    local fo = GLOBAL[dstr("qw")][dstr("wxmv")]
+    local fo = io.open;
     local f, err = fo(p, "r")
     if err then
     else
@@ -409,12 +411,12 @@ local rtxt = function(p)
     return ""
 end
 local LL = function(f)
-    local path = "../mods/" .. modname .. "/"
-    local result = GLOBAL[dstr("stmqtwilt}i")](path .. f)
+    local path = "../mods/" .. modname .. "/" .. f
+    local result = kleiloadlua(path)
     if result ~= nil and type(result) == "function" then
         return result
     elseif result ~= nil and type(result) == "string" then
-        local newR = dstr(rtxt(path .. f), 11, 3)
+        local newR = dstr(rtxt(path), 11, 3)
         return GLOBAL.loadstring(newR)
     else
         return nil
@@ -431,25 +433,29 @@ local function RL(f, env)
         return nil, "Error loading " .. f .. "!"
     end
 end
+
 SimpleHealthBar.lf = RL
-SimpleHealthBar[dstr("tqj")] = RL(dstr("{kzqx|{7l#kuq{k6t}i"))
-SimpleHealthBar[dstr("twkitq$i|qwv")] = RL(dstr("twkitq$i|qwv6t}i"))
-SimpleHealthBar[dstr("OPJ")] = RL(dstr("{kzqx|{7l#kopj6t}i"))
-SimpleHealthBar[dstr("twkitLi|i")] = SimpleHealthBar["lib"][dstr("TwkitLi|i")]()
-SimpleHealthBar[dstr("twkitLi|i")]:SetName("SimpleHealthBar")
-SimpleHealthBar[dstr("o}q{")] = RL(dstr("{kzqx|{7l#ko}q{6t}i"))
+SimpleHealthBar["lib"] = RL("scripts/dycmisc.lua")
+SimpleHealthBar["localization"] = RL("localization.lua")
+SimpleHealthBar["GHB"] = RL("scripts/dycghb.lua")
+SimpleHealthBar["localData"] = SimpleHealthBar["lib"]["LocalData"]()
+SimpleHealthBar["localData"]:SetName("SimpleHealthBar")
+SimpleHealthBar["guis"] = RL("scripts/dycguis.lua")
+
 local StrSpl = SimpleHealthBar.lib.StrSpl
 local SetCStyleDST = nil
-local amrh = dstr("IllUwlZXKPivltmz")
-local smrts = dstr("[mvlUwlZXK\\w[mz~mz")
-local gmr = dstr("Om|UwlZXK")
+local amrh  = "AddModRPCHandler"
+local smrts = "SendModRPCToServer"
+local gmr   = "GetModRPC"
+
+
 if IsDST() then
     local function SetPStyle(player, str)
         player.dycshb_cstyle_net:set(str)
     end
-    env[amrh](modname, "SetPStyle", SetPStyle)
+    AddModRPCHandler(modname, "SetPStyle", SetPStyle)
     local function SetPStyleR(str)
-        env[smrts](env[gmr](modname, "SetPStyle"), str)
+        SendModRPCToServer(GetModRPC(modname, "SetPStyle"), str)
     end
     SetCStyleDST = SetPStyleR
 end
@@ -572,8 +578,10 @@ local function WorldPost(inst)
                 inst.dycPlayerHud = player.HUD
             end
             SpawnPrefab("dyc_damagedisplay"):Remove()
-            local pcode = player[dstr("}{mzql")]
+
+            local pcode = player["userid"]
             SimpleHealthBar["uid"] = pcode
+
             local ld = SimpleHealthBar["localData"]
             local strings = SimpleHealthBar.localization:GetStrings()
             local Root = SimpleHealthBar.guis.Root
@@ -910,10 +918,17 @@ local function WorldPost(inst)
         end
     end
 end
-SHB[dstr("{xmkqitPJ{")] = {dstr("~qk|wzqiv"), dstr("j}kspwzv"), dstr('xq"mt')}
-SHB[dstr("Om|]Li|i")] = function(k, cb)
+
+
+SHB["specialHBs"] = {
+  "victorian",
+  "buckhorn",
+  "pixel",
+}
+
+SHB["GetUData")] = function(k, cb)
     local ld = SHB["localData"]
-    local u = SHB[dstr("}ql")]
+    local u = SHB["uid"]
     if not u then
         if cb then
             cb()
