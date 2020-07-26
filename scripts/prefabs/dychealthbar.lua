@@ -88,11 +88,11 @@ local function GetDistanceToCamera(ent)
         return cpos:Dist(ent:GetPosition())
     end
 end
-local str_ghb_1 = SimpleHealthBar.ds("kti!")
-local str_ghb_2 = SimpleHealthBar.ds("~qk|wzqiv")
-local str_ghb_3 = SimpleHealthBar.ds('xq"mt')
-local str_ghb_4 = SimpleHealthBar.ds("j}kspwzv")
-local str_ghb_5 = SimpleHealthBar.ds("{pilw!")
+local str_ghb_1 = "claw"
+local str_ghb_2 = "victorian";
+local str_ghb_3 = "pixel";
+local str_ghb_4 = "buckhorn";
+local str_ghb_5 = "shadow";
 local GH_ATLAS = "images/dyc_white.xml"
 local GH_TEXTURE = "dyc_white.tex"
 local GH_OFFSET_Y = -45
@@ -487,7 +487,7 @@ local function InitHB(inst)
     end
     inst.dycHbStarted = true
 end
-shb[SimpleHealthBar.ds("wv]xli|mPJ")] = function()
+shb["onUpdateHB"] = function()
     for k, v in pairs(SimpleHealthBar.GHB.ghbs) do
         local graphicData = GetHBStyle(v.target).graphic
         local hideWallHB = TUNING.DYC_HEALTHBAR_WALLHB ~= true and v.target and v.target:HasTag("wall")

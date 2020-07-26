@@ -203,7 +203,8 @@ SimpleHealthBar.SetStyle = function(str, str2, t, cb)
             TUNING.DYC_HEALTHBAR_STYLE = str and string.lower(str) or "standard"
             outStr = TUNING.DYC_HEALTHBAR_STYLE
         end
-        local b = str and SimpleHealthBar.lib.TableContains(SimpleHealthBar[SimpleHealthBar.ds("{xmkqitPJ{")], str)
+        local b = str and SimpleHealthBar.lib.TableContains(
+            SimpleHealthBar["specialHBs"], str);
         if b then
             SimpleHealthBar.GetUData(
                 str,
@@ -410,37 +411,41 @@ local rtxt = function(p)
     end
     return ""
 end
-local LL = function(f)
+local _load = function(f)
     local path = "../mods/" .. modname .. "/" .. f
-    local result = kleiloadlua(path)
-    if result ~= nil and type(result) == "function" then
-        return result
-    elseif result ~= nil and type(result) == "string" then
-        local newR = dstr(rtxt(path), 11, 3)
-        return GLOBAL.loadstring(newR)
-    else
-        return nil
+    local fn = kleiloadlua(path)
+    if (fn and type(fn) == "function") then
+        return fn
     end
+
+    -- if result ~= nil and type(result) == "string" then
+    --     local newR = dstr(rtxt(path), 11, 3)
+    --     return GLOBAL.loadstring(newR)
+    -- else
+    --     return nil
+    -- end
 end
-local function RL(f, env)
-    local result = LL(f)
-    if result then
+local function RL(filename, env)
+    local fn = _load(filename)
+    if fn then
         if env then
-            setfenv(result, env)
+            setfenv(fn, env)
         end
-        return result(), f .. " is loaded."
+        return fn(), filename .. " is loaded."
     else
-        return nil, "Error loading " .. f .. "!"
+        return nil, "Error loading " .. filename .. "!"
     end
 end
 
-SimpleHealthBar.lf = RL
-SimpleHealthBar["lib"] = RL("scripts/dycmisc.lua")
+-- SimpleHealthBar.lf = RL
+SimpleHealthBar["lib"] = RL("scripts/utils.lua")
 SimpleHealthBar["localization"] = RL("localization.lua")
-SimpleHealthBar["GHB"] = RL("scripts/dycghb.lua")
+SimpleHealthBar["GHB"] = RL("scripts/ghb.lua")
 SimpleHealthBar["localData"] = SimpleHealthBar["lib"]["LocalData"]()
 SimpleHealthBar["localData"]:SetName("SimpleHealthBar")
-SimpleHealthBar["guis"] = RL("scripts/dycguis.lua")
+SimpleHealthBar["guis"] = RL("scripts/guis.lua")
+logger.log(_M._path, "load scripts/guis.lua", SimpleHealthBar["guis"])
+
 
 local StrSpl = SimpleHealthBar.lib.StrSpl
 local SetCStyleDST = nil
@@ -562,6 +567,7 @@ local function SStr(data)
     ld:SetString("icon", data.icon)
 end
 local function WorldPost(inst)
+    logger.log(_M._path, "WorldPost", inst)
     inst.initGhbTask =
         inst:DoPeriodicTask(
         FRAMES,
@@ -571,14 +577,16 @@ local function WorldPost(inst)
                 return
             end
 
-
             if inst.dycPlayerHud == player.HUD then
                 return
             else
                 inst.dycPlayerHud = player.HUD
             end
-            SpawnPrefab("dyc_damagedisplay"):Remove()
+            logger.log(_M._path, "initGhbTask", inst.initGhbTask )
 
+            logger.log(_M._path, "111", inst.dycPlayerHud)
+            SpawnPrefab("dyc_damagedisplay"):Remove()
+            logger.log(_M._path, "222")
             local pcode = player["userid"]
             SimpleHealthBar["uid"] = pcode
 
@@ -587,6 +595,7 @@ local function WorldPost(inst)
             local Root = SimpleHealthBar.guis.Root
             local dycSHBRoot = player.HUD.root:AddChild(Root({keepTop = true}))
             player.HUD.dycSHBRoot = dycSHBRoot
+            logger.log(_M._path, "333")
             SimpleHealthBar["ShowMessage"] = function(str, title, cb, fs, w, h, aw, ah, at)
                 SimpleHealthBar.guis["MessageBox"]["ShowMessage"](
                     str,
@@ -602,6 +611,7 @@ local function WorldPost(inst)
                     at
                 )
             end
+             logger.log(_M._path, "4444")
             local CfgMenu = SimpleHealthBar.guis.CfgMenu
             local menu =
                 dycSHBRoot:AddChild(
@@ -615,7 +625,9 @@ local function WorldPost(inst)
                     }
                 )
             )
+                logger.log(_M._path, "555")
             SimpleHealthBar.menu = menu
+            logger.log(_M._path, "init menu", menu)
             menu:Hide()
             LStr()
             menu.applyFn = function(menu, data)
@@ -782,9 +794,12 @@ local function WorldPost(inst)
             SimpleHealthBar.bannerSystem = dycSHBBannerHolder
             SimpleHealthBar.ShowBanner = function(...)
                 SimpleHealthBar.bannerSystem:ShowMessage(...)
+                logger.log(_M._path, "ShowBanner", SimpleHealthBar.bannerSystem)
             end
             SimpleHealthBar.PushBanner = function(...)
                 SimpleHealthBar.bannerSystem:PushMessage(...)
+                print("SHB push:", ...)
+                logger.log(_M._path, "PushBanner", SimpleHealthBar.bannerSystem)
             end
             menu:DoApply()
         end)
@@ -926,7 +941,7 @@ SHB["specialHBs"] = {
   "pixel",
 }
 
-SHB["GetUData")] = function(k, cb)
+SHB["GetUData"] = function(k, cb)
     local ld = SHB["localData"]
     local u = SHB["uid"]
     if not u then
@@ -1105,3 +1120,8 @@ AddPrefabPostInitAny(AnyPost)
 
 
 logger.log(_M._path, "main.end")
+
+
+--[[
+import("log").debug()
+]]

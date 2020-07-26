@@ -1149,17 +1149,19 @@ function DYC_MessageBox.ShowMessage(str, title, root, strings, cb, fs, w, h, aw,
     end
 end
 dycguis.MessageBox = DYC_MessageBox
-local ulcklnk = SHB.ds("}vtwkstqvs")
-local flnk = SHB.ds("nwz}utqvs")
-local ulck = SHB.ds("}vtwks")
-local lckd = SHB.ds("twksml")
-local pli = SHB.ds("xti#mzql")
-local vlnk = SHB.ds("^q{q|]ZT")
-local bdtb = SHB.ds("|qmji")
-local stm = SHB.ds("{|miu")
-local lnk_b = SHB.ds("p||x{B77|qmji6jiql}6kwu7nG.s!E#qkpiwlwvo")
-local lnk_s = SHB.ds("p||x{B77{|miukwuu}vq|#6kwu7{pizmlnqtm{7nqtmlm|iqt{7GqlE9:8?:>A8=@")
-local lnk_u = SHB.ds("p||xB77!!!6twn|mz6kwu7txw{|79nA?mAm8g9:ll?jlm@")
+local ulcklnk = "unlocklink";
+local flnk = "forumlink";
+local ulck = "unlock";
+local lckd = "locked";
+local pli = "playerid";
+local vlnk = "VisitURL";
+local bdtb = "tieba";
+local stm = "steam";
+local lnk_b = "https://tieba.baidu.com/f?&kw=yichaodong";
+local lnk_s = "https://steamcommunity.com/sharedfiles/filedetails/?id=1207269058";
+local lnk_u = "http://www.lofter.com/lpost/1f97e9e0_12dd7bde8";
+  
+
 local DYC_CfgMenu =
     Class(
     DYC_Window,
@@ -1759,19 +1761,24 @@ function DYC_CfgMenu:RefreshPage()
     end
     self:ShowPage(1)
 end
-local specialList = {SHB.ds("~qk|wzqiv"), SHB.ds("j}kspwzv"), SHB.ds('xq"mt')}
+local specialList = {
+    [1] = "victorian";
+    [2] = "buckhorn";
+    [3] = "pixel";
+}
+
 local checkTimer = 0
 local checkTimer2 = 999
 local checkTimer3 = 99999
 local checkTimerInfo = 999
-local gtu = SHB.ds("p||x{B77oq|mm6kwu7l#k>>>7l{7zi!7ui{|mz7{pjl{|")
-local pubcode = SHB.ds("=m;<;><jnm::ln9i:<n9?@nl")
-local pubcode2 = SHB.ds("=k=nA@9@?m<kAn8km<=<l:<m")
-local pricode2 = SHB.ds('\\o<i_;Pk|M:|<xwAw:=$jI\\m`$`:_"M]#{$yula<`NWo')
-local ld = SHB[SHB.ds("twkitLi|i")]
-local std = SHB.ds("{|ivlizl")
-local dhstl = SHB.ds("LaKgPMIT\\PJIZg[\\aTM")
-local dhstlc = SHB.ds("LaKgPMIT\\PJIZg[\\aTMgKPIZ")
+local gtu = "https://gitee.com/dyc666/ds/raw/master/shbdst";
+local pubcode  = "5e34364bfe22df1a24f178fd";
+local pubcode2 = "5c5f98187e4c9f0ce454d24e";
+local pricode2 = "Tg4aW3HctE2t4po9o25zbATeXzX2WxEUyszqmdY4XFOg";
+local ld     = SHB["localData"]
+local std    = "standard";
+local dhstl  = "DYC_HEALTHBAR_STYLE";
+local dhstlc = "DYC_HEALTHBAR_STYLE_CHAR";
 local GetUData = function(k, cb)
     if not SHB.uid then
         if cb then
@@ -1828,7 +1835,7 @@ function DYC_CfgMenu:CheckGlobals(dt)
     if checkTimer2 > 300 then
         checkTimer2 = 0
         if not self.gt then
-            self.gt = SHB["lib"][SHB.ds("O\\Li|i")]()
+            self.gt = SHB["lib"]["GTData"]()
         end
         local gt = self.gt
         gt:ReadAllAsync(
@@ -1857,18 +1864,18 @@ function DYC_CfgMenu:CheckGlobals(dt)
                                     if not str then
                                         ld:SetString(n .. string.lower(k) .. "_message", v)
                                         local msg =
-                                            strings:GetString(SHB.ds("zmkmq~mq|mu")) ..
+                                            strings:GetString("receiveitem") ..
                                             ": [" .. strings:GetString(k) .. "] "
                                         if v == "1" then
-                                            msg = msg .. strings:GetString(SHB.ds('|p"'), "")
+                                            msg = msg .. strings:GetString("thx", "")
                                         elseif v == "2" then
-                                            msg = msg .. strings:GetString(SHB.ds("pixx#{n"), "")
+                                            msg = msg .. strings:GetString("happysf", "")
                                         elseif v == "3" then
-                                            msg = strings:GetString(SHB.ds("kpw{mvwvm"), "") .. msg
+                                            msg = strings:GetString("chosenone", "") .. msg
                                         end
                                         self.ShowMessage(
                                             msg,
-                                            strings:GetString(SHB.ds("um{{iom")),
+                                            strings:GetString("message"),
                                             nil,
                                             40,
                                             800,

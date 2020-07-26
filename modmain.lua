@@ -16,12 +16,9 @@ local regtime = GetTime()
 xpcall(function ()
 	logger.log(_M._path, "mod.import main.lua")
 	mod.import("main")
-	-- error(111)
-	logger.log(_M._path, "mod.import main.lua 222")
 end, print)
 
 
-logger.log(_M._path, "modmain.end inited")
 
 trace("[mod] simple_health_bar ....... init ok")
 logger.log(_M._path, "modmain.end")
